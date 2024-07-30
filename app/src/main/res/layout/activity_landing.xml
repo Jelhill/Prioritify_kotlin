@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CCEAED"
+    android:background="@color/bgcolor"
     tools:context=".LandingActivity">
 
     <!-- Welcome Message -->
@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:text="Welcome to Prioritify"
-        android:textColor="@android:color/black"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -28,7 +28,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
         android:text="My Priority Task"
-        android:textColor="@android:color/black"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <!-- First Priority Task -->
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Finish Math Assignment"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewPriorityTask1"
             android:text="10:20 am"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="16sp" />
     </RelativeLayout>
 
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Visit Yoga Gym"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewPriorityTask2"
             android:text="11:50 am"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="16sp" />
     </RelativeLayout>
 
@@ -97,7 +97,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginStart="16dp"
         android:text="My Tasks"
-        android:textColor="@android:color/black"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <!-- Task Tabs -->
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Today"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:layout_marginEnd="20dp" />
 
@@ -124,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Weekly Task"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:layout_marginEnd="20dp" />
 
@@ -133,102 +133,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Monthly Task"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:textSize="16sp" />
     </LinearLayout>
 
-    <!-- Tasks List -->
-    <RelativeLayout
-        android:id="@+id/relativeLayoutTask1"
+    <!-- Tasks List Container -->
+    <LinearLayout
+        android:id="@+id/taskContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayoutTaskTabs"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/white"
-        android:padding="10dp">
+        android:orientation="vertical"
+        android:padding="16dp" />
 
-        <TextView
-            android:id="@+id/textViewTask1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Finish Math Assignment"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/textViewTask1Time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textViewTask1"
-            android:text="10:20 am, Mar 2023"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/textViewTask1Priority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:background="@android:color/holo_red_light"
-            android:padding="4dp"
-            android:text="High"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relativeLayoutTask2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/relativeLayoutTask1"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/white"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/textViewTask2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Visit Yoga Gym"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/textViewTask2Time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textViewTask2"
-            android:text="11:50 am, Mar 2023"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/textViewTask2Priority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:background="@android:color/holo_green_light"
-            android:padding="4dp"
-            android:text="Low"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-    </RelativeLayout>
-
-    <Button
+    <!-- Create Task Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonCreateTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="127dp"
-        android:layout_marginEnd="148dp"
-        android:layout_marginBottom="113dp"
-        android:text="Create Task" />
-
-
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:srcCompat="@drawable/added"
+        android:contentDescription="Create Task"
+        />
 </RelativeLayout>

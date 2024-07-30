@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CCEAED"
+    android:background="@color/bgcolor"
     tools:context=".SignUpActivity">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:text="Create Account"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -26,7 +26,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Fill your information below and register with your social account"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
+        android:textStyle="italic"
         android:textAlignment="center"
         android:textSize="16sp" />
 
@@ -74,7 +75,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="16dp"
         android:text="Agree with Terms  Conditions"
-        android:textColor="@color/black" />
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/btnSignUp"
@@ -93,7 +94,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="Sign in with"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <LinearLayout

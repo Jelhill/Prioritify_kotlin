@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="bgcolor">#272323</color>
+    <color name="highPriorityColor">#FFCDD2</color>
+    <color name="mediumPriorityColor">#FFF9C4</color>
+    <color name="lowPriorityColor">#C8E6C9</color>
+    <color name="completedTaskColor">#BDBDBD</color>
 </resources>

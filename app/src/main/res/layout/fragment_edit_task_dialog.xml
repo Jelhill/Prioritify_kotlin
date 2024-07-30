@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@color/bgcolor">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editTextTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTitle"
+        android:background="@drawable/edittext_background"
+        android:hint="Enter task title"
+        android:padding="8dp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/textViewDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextTitle"
+        android:text="Description"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editTextDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewDescription"
+        android:background="@drawable/edittext_background"
+        android:hint="Enter task description"
+        android:padding="8dp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp" />
+
+    <!-- From Time -->
+    <TextView
+        android:id="@+id/textViewFromTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextDescription"
+        android:text="From"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editTextFromTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewFromTime"
+        android:background="@drawable/edittext_background"
+        android:hint="Enter from time"
+        android:padding="8dp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp"
+        android:focusable="false"
+        android:clickable="true" />
+
+    <!-- To Time -->
+    <TextView
+        android:id="@+id/textViewToTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextFromTime"
+        android:text="To"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editTextToTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewToTime"
+        android:background="@drawable/edittext_background"
+        android:hint="Enter to time"
+        android:padding="8dp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="8dp"
+        android:focusable="false"
+        android:clickable="true" />
+
+    <!-- Priority -->
+    <TextView
+        android:id="@+id/textViewChoosePriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextToTime"
+        android:text="Priority"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupPriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewChoosePriority"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/radioButtonHigh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="High"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_marginEnd="16dp" />
+
+        <RadioButton
+            android:id="@+id/radioButtonMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medium"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_marginEnd="16dp" />
+
+        <RadioButton
+            android:id="@+id/radioButtonLow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Low"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RadioGroup>
+
+    <!-- Buttons -->
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/radioGroupPriority"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:text="Save"
+        android:textAllCaps="true"
+        android:padding="12dp"
+        android:background="@drawable/button_background" />
+
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonSave"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Delete"
+        android:textAllCaps="true"
+        android:padding="12dp"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:background="@drawable/button_background_red" />
+</RelativeLayout>

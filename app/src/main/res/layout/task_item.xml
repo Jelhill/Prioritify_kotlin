@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/taskLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:layout_margin="5dp"
+    android:background="@drawable/task_background">
+
+    <RadioButton
+        android:id="@+id/radioButtonComplete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/textViewTaskTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/radioButtonComplete"
+        android:text="Task Title"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:layout_marginStart="10dp" />
+
+    <TextView
+        android:id="@+id/textViewTaskTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewTaskTitle"
+        android:layout_toEndOf="@id/radioButtonComplete"
+        android:text="10:00 AM - 11:00 AM"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:layout_marginStart="10dp" />
+
+    <TextView
+        android:id="@+id/textViewTaskPriority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:layout_centerVertical="true"
+        android:padding="4dp"
+        android:text="High"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+</RelativeLayout>
