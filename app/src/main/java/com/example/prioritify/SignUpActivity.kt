@@ -1,14 +1,20 @@
 package com.example.prioritify
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.prioritify.api.RegisterRequest
+import com.example.prioritify.api.RegisterResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -35,31 +41,57 @@ class SignUpActivity : AppCompatActivity() {
             if (name.isEmpty() || email.isEmpty() || password.isEmpty() || !agreeTerms) {
                 Toast.makeText(this, "Please fill in all fields and agree to the terms", Toast.LENGTH_SHORT).show()
             } else {
-                // Handle sign up logic
-                Toast.makeText(this, "Sign Up clicked", Toast.LENGTH_SHORT).show()
+                registerUser(name, email, password)
             }
         }
 
         appleSignInButton.setOnClickListener {
-            // Handle Apple sign in logic
             Toast.makeText(this, "Apple Sign In clicked", Toast.LENGTH_SHORT).show()
         }
 
         googleSignInButton.setOnClickListener {
-            // Handle Google sign in logic
             Toast.makeText(this, "Google Sign In clicked", Toast.LENGTH_SHORT).show()
         }
 
         facebookSignInButton.setOnClickListener {
-            // Handle Facebook sign in logic
             Toast.makeText(this, "Facebook Sign In clicked", Toast.LENGTH_SHORT).show()
         }
 
         alreadyHaveAccountTextView.setOnClickListener {
-            // Navigate back to Sign In page
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun registerUser(name: String, email: String, password: String) {
+        Log.d("DATA", "$email $name $password")
+        val request = RegisterRequest(name, email, password)
+        Log.d("RegisterRequest", request.toString())
+
+        val call = RetrofitClient.instance.registerUser(request)
+
+        call.enqueue(object : Callback<RegisterResponse> {
+            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val user = response.body()?.data?.user
+                    val token = response.body()?.data?.token
+                    Toast.makeText(this@SignUpActivity, "Registration successful: ${user?.full_name}", Toast.LENGTH_SHORT).show()
+
+                    // Save the token or navigate to the next screen
+                    val intent = Intent(this@SignUpActivity, LandingActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Log.d("RESPONDE BODY", response.toString())
+                    Toast.makeText(this@SignUpActivity, "Registration failed: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                Log.d("Message", t.toString())
+                Toast.makeText(this@SignUpActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

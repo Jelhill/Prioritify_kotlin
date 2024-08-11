@@ -1,13 +1,18 @@
 package com.example.prioritify
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.prioritify.api.LoginRequest
+import com.example.prioritify.api.LoginResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,44 +32,59 @@ class MainActivity : AppCompatActivity() {
         signInButton.setOnClickListener {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
-            // Handle sign in logic
-            Toast.makeText(this, "Sign In clicked", Toast.LENGTH_SHORT).show()
 
-            // After successful login, navigate to LandingActivity
-            val intent = Intent(this, LandingActivity::class.java)
-            startActivity(intent)
-            finish()
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter your email and password", Toast.LENGTH_SHORT).show()
+            } else {
+                loginUser(email, password)
+            }
         }
 
         forgotPasswordTextView.setOnClickListener {
-            // Handle forgot password logic
             Toast.makeText(this, "Forgot Password clicked", Toast.LENGTH_SHORT).show()
         }
 
         appleSignInButton.setOnClickListener {
-            // Handle Apple sign in logic
             Toast.makeText(this, "Apple Sign In clicked", Toast.LENGTH_SHORT).show()
         }
 
         googleSignInButton.setOnClickListener {
-            // Handle Google sign in logic
             Toast.makeText(this, "Google Sign In clicked", Toast.LENGTH_SHORT).show()
         }
 
         facebookSignInButton.setOnClickListener {
-            // Handle Facebook sign in logic
             Toast.makeText(this, "Facebook Sign In clicked", Toast.LENGTH_SHORT).show()
         }
-
-//        signUpTextView.setOnClickListener {
-//            // Handle sign up logic
-//            Toast.makeText(this, "Sign Up clicked", Toast.LENGTH_SHORT).show()
-//        }
 
         signUpTextView.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun loginUser(email: String, password: String) {
+        val request = LoginRequest(email, password)
+        val call = RetrofitClient.instance.loginUser(request)
+
+        call.enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val user = response.body()?.data?.user
+                    val token = response.body()?.data?.token
+                    Toast.makeText(this@MainActivity, "Welcome, ${user?.full_name}", Toast.LENGTH_SHORT).show()
+
+                    // Save the token or navigate to the next screen
+                    val intent = Intent(this@MainActivity, LandingActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this@MainActivity, "Login failed: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
