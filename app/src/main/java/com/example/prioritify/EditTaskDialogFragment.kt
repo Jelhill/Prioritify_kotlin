@@ -1,3 +1,4 @@
+
 package com.example.prioritify
 
 import android.app.Dialog
@@ -29,7 +30,7 @@ class EditTaskDialogFragment : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_edit_task_dialog, null)
 
         taskIndex = arguments?.getInt("taskIndex") ?: -1
-        val task = CreateTaskActivity.taskList[taskIndex]
+        val task = LandingActivity.taskList[taskIndex]
 
         titleEditText = view.findViewById(R.id.editTextTitle)
         descriptionEditText = view.findViewById(R.id.editTextDescription)
@@ -41,8 +42,8 @@ class EditTaskDialogFragment : DialogFragment() {
 
         titleEditText.setText(task.title)
         descriptionEditText.setText(task.description)
-        fromTimeEditText.setText(task.fromTime)
-        toTimeEditText.setText(task.toTime)
+        fromTimeEditText.setText(task.startTime)
+        toTimeEditText.setText(task.endTime)
 
         when (task.priority) {
             "High" -> priorityRadioGroup.check(R.id.radioButtonHigh)
@@ -101,11 +102,11 @@ class EditTaskDialogFragment : DialogFragment() {
             return
         }
 
-        val task = CreateTaskActivity.taskList[taskIndex]
+        var task = LandingActivity.taskList[taskIndex]
         task.title = title
         task.description = description
-        task.fromTime = fromTime
-        task.toTime = toTime
+        task.startTime = fromTime
+        task.endTime = toTime
         task.priority = priority
 
         (activity as LandingActivity).populateTasks()
@@ -113,7 +114,7 @@ class EditTaskDialogFragment : DialogFragment() {
     }
 
     private fun deleteTask() {
-        CreateTaskActivity.taskList.removeAt(taskIndex)
+        LandingActivity.taskList.removeAt(taskIndex)
         (activity as LandingActivity).populateTasks()
         dismiss()
     }

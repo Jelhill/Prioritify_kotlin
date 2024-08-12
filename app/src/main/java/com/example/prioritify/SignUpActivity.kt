@@ -1,8 +1,10 @@
 package com.example.prioritify
 
+import SessionManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -17,11 +19,13 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SignUpActivity : AppCompatActivity() {
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
+        sessionManager = SessionManager(this)
         val nameEditText: EditText = findViewById(R.id.etName)
         val emailEditText: EditText = findViewById(R.id.etEmail)
         val passwordEditText: EditText = findViewById(R.id.etPassword)
@@ -40,6 +44,8 @@ class SignUpActivity : AppCompatActivity() {
 
             if (name.isEmpty() || email.isEmpty() || password.isEmpty() || !agreeTerms) {
                 Toast.makeText(this, "Please fill in all fields and agree to the terms", Toast.LENGTH_SHORT).show()
+            } else if (!isValidEmail(email)) {
+                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
             } else {
                 registerUser(name, email, password)
             }
@@ -64,12 +70,17 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
     private fun registerUser(name: String, email: String, password: String) {
         Log.d("DATA", "$email $name $password")
         val request = RegisterRequest(name, email, password)
         Log.d("RegisterRequest", request.toString())
 
-        val call = RetrofitClient.instance.registerUser(request)
+        val apiService = RetrofitClient.getInstance(sessionManager)
+        val call = apiService.registerUser(request)
 
         call.enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {

@@ -19,164 +19,76 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:text="CREATE NEW TASK"
+            android:text="@string/create_new_task"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/white" />
 
-        <!-- Date and Task Count -->
+        <!-- Start Date and Time -->
         <TextView
-            android:id="@+id/textViewDate"
+            android:id="@+id/textViewStartDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/textViewCreateNewTask"
             android:layout_marginTop="16dp"
-            android:text="12 September, 2023\n3 tasks remaining"
+            android:text="@string/start_date_time"
             android:textSize="16sp"
             android:textColor="@color/white" />
 
-        <!-- Calendar -->
-        <LinearLayout
-            android:id="@+id/linearLayoutCalendar"
+        <EditText
+            android:id="@+id/editTextStartDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@id/textViewStartDateTime"
+            android:hint="@string/select_start_date_time"
+            android:inputType="none"
+            android:focusable="false"
+            android:background="@android:color/white"
+            android:padding="12dp" />
+
+        <!-- End Date and Time -->
+        <TextView
+            android:id="@+id/textViewEndDateTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textViewDate"
+            android:layout_below="@id/editTextStartDateTime"
             android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:text="@string/end_date_time"
+            android:textSize="16sp"
+            android:textColor="@color/white" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Mon"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Tue"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Wed"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Thu"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Fri"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Sat"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Sun"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <!-- Time Section -->
-        <LinearLayout
-            android:id="@+id/linearLayoutTime"
+        <EditText
+            android:id="@+id/editTextEndDateTime"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/linearLayoutCalendar"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <!-- From Time -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="From"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/editTextFromTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="10:00 AM"
-                    android:inputType="time"
-                    android:background="@android:color/white" />
-            </LinearLayout>
-
-            <!-- To Time -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="To"
-                    android:textColor="@color/white"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/editTextToTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="04:30 PM"
-                    android:inputType="time"
-                    android:background="@android:color/white" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_height="48dp"
+            android:layout_below="@id/textViewEndDateTime"
+            android:hint="@string/select_end_date_time"
+            android:inputType="none"
+            android:focusable="false"
+            android:background="@android:color/white"
+            android:padding="12dp" />
 
         <!-- Title -->
         <TextView
             android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/linearLayoutTime"
+            android:layout_below="@id/editTextEndDateTime"
             android:layout_marginTop="16dp"
-            android:text="Title"
+            android:text="@string/title"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
         <EditText
             android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/textViewTitle"
-            android:hint="Enter task title"
-            android:background="@android:color/white" />
+            android:hint="@string/enter_task_title"
+            android:inputType="text"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:autofillHints="autofillHint" />
 
         <!-- Description -->
         <TextView
@@ -185,17 +97,20 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/editTextTitle"
             android:layout_marginTop="16dp"
-            android:text="Description"
+            android:text="@string/description"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
         <EditText
             android:id="@+id/editTextDescription"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/textViewDescription"
-            android:hint="Enter task description"
-            android:background="@android:color/white" />
+            android:hint="@string/enter_task_description"
+            android:inputType="text"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:autofillHints="autofillHint" />
 
         <!-- Priority Section -->
         <TextView
@@ -204,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/editTextDescription"
             android:layout_marginTop="16dp"
-            android:text="Choose Priority: "
+            android:text="@string/choose_priority"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
@@ -219,40 +134,39 @@
             <RadioButton
                 android:id="@+id/radioButtonHigh"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="High"
+                android:layout_height="48dp"
+                android:text="@string/high"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
             <RadioButton
                 android:id="@+id/radioButtonMedium"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Medium"
+                android:layout_height="48dp"
+                android:text="@string/medium"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginStart="16dp" />
 
             <RadioButton
                 android:id="@+id/radioButtonLow"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Low"
+                android:layout_height="48dp"
+                android:text="@string/low"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginStart="16dp" />
         </RadioGroup>
 
         <!-- Create Button -->
         <Button
             android:id="@+id/buttonCreate"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_below="@id/radioGroupPriority"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
-            android:text="CREATE"
+            android:text="@string/create"
             android:textAllCaps="true" />
-
     </RelativeLayout>
 </ScrollView>

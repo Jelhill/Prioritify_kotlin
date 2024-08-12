@@ -1,7 +1,9 @@
 package com.example.prioritify
 
+import SessionManager
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -63,17 +65,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
+        val sessionManager = SessionManager(this)
+        val retrofitClient = RetrofitClient.getInstance(sessionManager)
+
         val request = LoginRequest(email, password)
-        val call = RetrofitClient.instance.loginUser(request)
+        val call = retrofitClient.loginUser(request)
 
         call.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
+                    Log.d("RESPONSE RECIVED", response.body().toString());
                     val user = response.body()?.data?.user
                     val token = response.body()?.data?.token
+                    Log.d("USER", user.toString());
+                    Log.d("TOKEN", token.toString());
                     Toast.makeText(this@MainActivity, "Welcome, ${user?.full_name}", Toast.LENGTH_SHORT).show()
 
-                    // Save the token or navigate to the next screen
+                    // Save the token using SessionManager
+                    sessionManager.saveAuthToken(token!!)
+
+                    // Navigate to the next screen
                     val intent = Intent(this@MainActivity, LandingActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -87,4 +98,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+
 }

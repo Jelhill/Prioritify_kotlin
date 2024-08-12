@@ -1,14 +1,20 @@
 package com.example.prioritify
 
+import SessionManager
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.prioritify.api.ApiService
+import com.example.prioritify.api.TaskRequest
+import com.example.prioritify.api.TaskResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class EditTaskActivity : AppCompatActivity() {
 
@@ -21,6 +27,7 @@ class EditTaskActivity : AppCompatActivity() {
     private lateinit var deleteButton: Button
 
     private var taskIndex: Int = -1
+    private lateinit var apiService: ApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,18 +41,20 @@ class EditTaskActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.buttonSave)
         deleteButton = findViewById(R.id.buttonDelete)
 
+        apiService = RetrofitClient.getInstance(SessionManager(this))
+
         taskIndex = intent.getIntExtra("taskIndex", -1)
-        val task = CreateTaskActivity.taskList[taskIndex]
+        val task = LandingActivity.taskList[taskIndex]
 
         titleEditText.setText(task.title)
         descriptionEditText.setText(task.description)
-        fromTimeEditText.setText(task.fromTime)
-        toTimeEditText.setText(task.toTime)
+        fromTimeEditText.setText(task.startTime)
+        toTimeEditText.setText(task.endTime)
 
-        when (task.priority) {
-            "High" -> priorityRadioGroup.check(R.id.radioButtonHigh)
-            "Medium" -> priorityRadioGroup.check(R.id.radioButtonMedium)
-            "Low" -> priorityRadioGroup.check(R.id.radioButtonLow)
+        when (task.priority.uppercase()) {
+            "HIGH" -> priorityRadioGroup.check(R.id.radioButtonHigh)
+            "MEDIUM" -> priorityRadioGroup.check(R.id.radioButtonMedium)
+            "LOW" -> priorityRadioGroup.check(R.id.radioButtonLow)
         }
 
         fromTimeEditText.setOnClickListener {
@@ -85,9 +94,9 @@ class EditTaskActivity : AppCompatActivity() {
         val fromTime = fromTimeEditText.text.toString()
         val toTime = toTimeEditText.text.toString()
         val priority = when (priorityRadioGroup.checkedRadioButtonId) {
-            R.id.radioButtonHigh -> "High"
-            R.id.radioButtonMedium -> "Medium"
-            R.id.radioButtonLow -> "Low"
+            R.id.radioButtonHigh -> "HIGH"
+            R.id.radioButtonMedium -> "MEDIUM"
+            R.id.radioButtonLow -> "LOW"
             else -> ""
         }
 
@@ -96,18 +105,65 @@ class EditTaskActivity : AppCompatActivity() {
             return
         }
 
-        val task = CreateTaskActivity.taskList[taskIndex]
-        task.title = title
-        task.description = description
-        task.fromTime = fromTime
-        task.toTime = toTime
-        task.priority = priority
+        // Assuming the reminder time is the same as the start time
+        val reminderTime = fromTime
 
-        finish()
+        val taskRequest = TaskRequest(
+            title = title,
+            description = description,
+            priority = priority,
+            startTime = fromTime,
+            endTime = toTime,
+            reminder = reminderTime
+        )
+
+        val taskId = LandingActivity.taskList[taskIndex].id
+
+        val call = apiService.updateTask(taskId, taskRequest)
+        call.enqueue(object : Callback<TaskResponse> {
+            override fun onResponse(call: Call<TaskResponse>, response: Response<TaskResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+//                    LandingActivity.taskList[taskIndex] = response.body()!!.data
+                    LandingActivity.taskList[taskIndex] = response.body()!!.data.firstOrNull() ?: return
+
+                    Toast.makeText(this@EditTaskActivity, "Task Updated Successfully", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this@EditTaskActivity, "Failed to Update Task", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<TaskResponse>, t: Throwable) {
+                Toast.makeText(this@EditTaskActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun deleteTask() {
-        CreateTaskActivity.taskList.removeAt(taskIndex)
-        finish()
+        val taskId = LandingActivity.taskList[taskIndex].id
+
+        val call = apiService.deleteTask(taskId)
+        call.enqueue(object : Callback<TaskResponse> {
+            override fun onResponse(call: Call<TaskResponse>, response: Response<TaskResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val tasks = response.body()?.data
+                    if (!tasks.isNullOrEmpty()) {
+                        LandingActivity.taskList[taskIndex] = tasks[0]
+                        Toast.makeText(this@EditTaskActivity, "Task Updated Successfully", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this@EditTaskActivity, "No task data returned", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this@EditTaskActivity, "Failed to Update Task", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+
+            override fun onFailure(call: Call<TaskResponse>, t: Throwable) {
+                Toast.makeText(this@EditTaskActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
+

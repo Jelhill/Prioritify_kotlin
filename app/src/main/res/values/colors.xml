@@ -12,4 +12,5 @@
     <color name="mediumPriorityColor">#FFF9C4</color>
     <color name="lowPriorityColor">#C8E6C9</color>
     <color name="completedTaskColor">#BDBDBD</color>
+    <color name="activeTabColor">#FF5722</color> <!-- Example color, you can choose any other -->
 </resources>
