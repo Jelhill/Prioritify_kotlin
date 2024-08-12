@@ -1,6 +1,6 @@
-
 package com.example.prioritify
 
+import SessionManager
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.os.Bundle
@@ -11,6 +11,12 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.appcompat.app.AlertDialog
+import com.example.prioritify.api.EditTaskResponse
+import com.example.prioritify.api.TaskRequest
+import com.example.prioritify.api.TaskResponse
+import retrofit2.Callback
+import retrofit2.Call
+import retrofit2.Response
 
 class EditTaskDialogFragment : DialogFragment() {
 
@@ -102,21 +108,69 @@ class EditTaskDialogFragment : DialogFragment() {
             return
         }
 
-        var task = LandingActivity.taskList[taskIndex]
-        task.title = title
-        task.description = description
-        task.startTime = fromTime
-        task.endTime = toTime
-        task.priority = priority
+        val task = LandingActivity.taskList[taskIndex]
 
-        (activity as LandingActivity).populateTasks()
-        dismiss()
+        // Prepare the task request for updating
+        val taskRequest = TaskRequest(
+            title = title,
+            description = description,
+            priority = priority,
+            startTime = fromTime,
+            endTime = toTime,
+            reminder = fromTime
+        )
+
+        val apiService = RetrofitClient.getInstance(SessionManager(requireContext()))
+        val call = apiService.updateTask(task._id, taskRequest)
+
+        call.enqueue(object : Callback<EditTaskResponse> {
+            override fun onResponse(call: Call<EditTaskResponse>, response: Response<EditTaskResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val updatedTask = response.body()?.data
+                    if (updatedTask != null) {
+                        LandingActivity.taskList[taskIndex] = updatedTask
+                        (activity as LandingActivity).populateTasks("PENDING") // Specify the status
+                        dismiss()
+                    } else {
+                        Toast.makeText(requireContext(), "No task data returned from server", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Task update failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<EditTaskResponse>, t: Throwable) {
+                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun deleteTask() {
-        LandingActivity.taskList.removeAt(taskIndex)
-        (activity as LandingActivity).populateTasks()
-        dismiss()
+        val task = LandingActivity.taskList[taskIndex]
+        val taskId = task._id
+
+        val apiService = RetrofitClient.getInstance(SessionManager(requireContext()))
+        val call = apiService.deleteTask(taskId)
+
+        call.enqueue(object : Callback<TaskResponse> {
+            override fun onResponse(call: Call<TaskResponse>, response: Response<TaskResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    // Remove task from the local list since deletion was successful
+                    LandingActivity.taskList.removeAt(taskIndex)
+                    // Refresh the UI for the correct task status
+                    val currentStatus = if (task.status == "PENDING") "PENDING" else "COMPLETED"
+                    (activity as LandingActivity).populateTasks(currentStatus)
+
+                    dismiss()
+                } else {
+                    Toast.makeText(requireContext(), "Failed to delete task", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<TaskResponse>, t: Throwable) {
+                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     companion object {

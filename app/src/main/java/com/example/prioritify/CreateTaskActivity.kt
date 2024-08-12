@@ -5,11 +5,13 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.prioritify.api.CreateTaskResponse
 import com.example.prioritify.api.TaskRequest
 import com.example.prioritify.api.TaskResponse
 import retrofit2.Call
@@ -64,8 +66,14 @@ class CreateTaskActivity : AppCompatActivity() {
                 else -> ""
             }
 
+            val currentTime = dateFormat.format(Calendar.getInstance().time)
+
             if (title.isEmpty() || description.isEmpty() || startTime.isEmpty() || endTime.isEmpty() || priority.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields and select a priority", Toast.LENGTH_SHORT).show()
+            } else if (!isEndDateValid(startTime, endTime)) {
+                Toast.makeText(this, "End date must be after start date", Toast.LENGTH_SHORT).show()
+            } else if (!isStartTimeValid(startTime, currentTime)) {
+                Toast.makeText(this, "Start time cannot be in the past", Toast.LENGTH_SHORT).show()
             } else {
                 val reminder = getReminderTime(startTime)
                 val taskRequest = TaskRequest(title, description, priority, startTime, endTime, reminder)
@@ -74,6 +82,15 @@ class CreateTaskActivity : AppCompatActivity() {
         }
     }
 
+    private fun isStartTimeValid(startTime: String, currentTime: String): Boolean {
+        return try {
+            val startDate = dateFormat.parse(startTime)
+            val currentDate = dateFormat.parse(currentTime)
+            startDate.after(currentDate) || startDate == currentDate
+        } catch (e: Exception) {
+            false
+        }
+    }
     private fun showDateTimePicker(onDateTimeSelected: (String) -> Unit) {
         val calendar = Calendar.getInstance()
 
@@ -98,12 +115,22 @@ class CreateTaskActivity : AppCompatActivity() {
         return startTime // Use the same startTime as the reminder for simplicity
     }
 
+    private fun isEndDateValid(startTime: String, endTime: String): Boolean {
+        return try {
+            val startDate = dateFormat.parse(startTime)
+            val endDate = dateFormat.parse(endTime)
+            endDate.after(startDate)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     private fun createTask(taskRequest: TaskRequest) {
         val apiService = RetrofitClient.getInstance(sessionManager)
         val call = apiService.createTask(taskRequest)
 
-        call.enqueue(object : Callback<TaskResponse> {
-            override fun onResponse(call: Call<TaskResponse>, response: Response<TaskResponse>) {
+        call.enqueue(object : Callback<CreateTaskResponse> {
+            override fun onResponse(call: Call<CreateTaskResponse>, response: Response<CreateTaskResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Toast.makeText(this@CreateTaskActivity, "Task Created Successfully", Toast.LENGTH_SHORT).show()
 
@@ -116,7 +143,8 @@ class CreateTaskActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<TaskResponse>, t: Throwable) {
+            override fun onFailure(call: Call<CreateTaskResponse>, t: Throwable) {
+                Log.d("ERROR FROM CREATING", t.message.toString())
                 Toast.makeText(this@CreateTaskActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

@@ -12,14 +12,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.prioritify.api.ApiService
+import com.example.prioritify.api.EditTaskResponse
 import com.example.prioritify.api.TaskData
 import com.example.prioritify.api.TaskResponse
+import com.example.prioritify.api.TaskStatusRequest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class LandingActivity : AppCompatActivity() {
@@ -29,6 +30,7 @@ class LandingActivity : AppCompatActivity() {
     }
 
     private lateinit var apiService: ApiService
+    private var currentStatus: String = "PENDING" // Track the currently selected tab status
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,23 +44,26 @@ class LandingActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<TextView>(R.id.textViewTodayTask).setOnClickListener {
-            filterTasksForToday()
+        findViewById<TextView>(R.id.textViewPendingTasks).setOnClickListener {
+            currentStatus = "PENDING"
+            filterTasksByStatus(currentStatus)
         }
 
-        findViewById<TextView>(R.id.textViewWeeklyTask).setOnClickListener {
-            filterTasksForWeek()
-        }
-
-        findViewById<TextView>(R.id.textViewMonthlyTask).setOnClickListener {
-            filterTasksForMonth()
+        findViewById<TextView>(R.id.textViewCompletedTasks).setOnClickListener {
+            currentStatus = "COMPLETED"
+            filterTasksByStatus(currentStatus)
         }
 
         fetchUserTasks() // Fetch tasks when the activity is created
     }
 
     private fun fetchUserTasks() {
-        val call = apiService.getAllTasksByUser()
+        val call = if (currentStatus == "PENDING") {
+            apiService.getAllTasksByUser() // Fetch all tasks
+        } else {
+            apiService.getTodosByStatus(currentStatus) // Fetch tasks by status
+        }
+
         call.enqueue(object : Callback<TaskResponse> {
             override fun onResponse(call: Call<TaskResponse>, response: Response<TaskResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
@@ -66,7 +71,7 @@ class LandingActivity : AppCompatActivity() {
                     response.body()?.data?.let { tasks ->
                         taskList.addAll(tasks) // tasks should be a list of TaskData
                     }
-                    populateTasks() // Populate UI with tasks
+                    populateTasks(currentStatus)
                 } else {
                     Toast.makeText(this@LandingActivity, "Failed to fetch tasks", Toast.LENGTH_SHORT).show()
                 }
@@ -78,17 +83,24 @@ class LandingActivity : AppCompatActivity() {
         })
     }
 
-    fun populateTasks(filterDate: String? = null) {
+
+    fun populateTasks(status: String? = null) {
         val taskContainer: LinearLayout = findViewById(R.id.taskContainer)
         taskContainer.removeAllViews()
 
-        val filteredTaskList = if (filterDate != null) {
-            taskList.filter { it.startTime.contains(filterDate) }
+        val filteredTaskList = if (status != null) {
+            taskList.filter { it.status == status }
         } else {
             taskList
         }
 
-        // Define the desired date format
+        if (filteredTaskList.isEmpty()) {
+            // Show a message or empty state if no tasks match the filter
+            val emptyView = layoutInflater.inflate(R.layout.empty_task_item, taskContainer, false)
+            taskContainer.addView(emptyView)
+            return
+        }
+
         val displayDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
         for ((index, task) in filteredTaskList.withIndex()) {
@@ -102,7 +114,6 @@ class LandingActivity : AppCompatActivity() {
 
             titleTextView.text = task.title
 
-            // Parse the start and end times and reformat them
             val startTimeFormatted = displayDateFormat.format(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(task.startTime))
             val endTimeFormatted = displayDateFormat.format(SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(task.endTime))
 
@@ -121,10 +132,10 @@ class LandingActivity : AppCompatActivity() {
 
             taskContainer.addView(taskView)
 
-            // Handle task completion logic
+            radioButtonComplete.isChecked = task.status == "COMPLETED"
             radioButtonComplete.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    drawable.setColor(ContextCompat.getColor(this, R.color.completedTaskColor))
+                    updateTaskStatus(task._id, "COMPLETED", index)
                 } else {
                     drawable.setColor(backgroundColor)
                 }
@@ -137,23 +148,68 @@ class LandingActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateTaskStatus(taskId: String, status: String, index: Int) {
+        val statusUpdate = TaskStatusRequest(status) // Create the request object
+        val call = apiService.updateTaskStatus(taskId, statusUpdate)
+
+        call.enqueue(object : Callback<EditTaskResponse> {
+            override fun onResponse(call: Call<EditTaskResponse>, response: Response<EditTaskResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    // Update the task status in the local list
+                    LandingActivity.taskList[index].status = status
+                    // Immediately remove the task from the UI
+                    taskList.removeAt(index)
+                    populateTasks("PENDING")
+                } else {
+                    Toast.makeText(this@LandingActivity, "Failed to update task status", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<EditTaskResponse>, t: Throwable) {
+                Toast.makeText(this@LandingActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun filterTasksByStatus(status: String) {
+        currentStatus = status // Update the current status
+
+        val call = apiService.getAllTasksByUser() // or fetch based on status
+
+        call.enqueue(object : Callback<TaskResponse> {
+            override fun onResponse(call: Call<TaskResponse>, response: Response<TaskResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    taskList.clear()
+                    response.body()?.data?.let { tasks ->
+                        taskList.addAll(tasks.filter { it.status == status })
+                    }
+                    populateTasks(status)
+                } else {
+                    Toast.makeText(this@LandingActivity, "Failed to fetch tasks", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<TaskResponse>, t: Throwable) {
+                Toast.makeText(this@LandingActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Update tab UI to show which tab is selected
+        val pendingTab: TextView = findViewById(R.id.textViewPendingTasks)
+        val completedTab: TextView = findViewById(R.id.textViewCompletedTasks)
+
+        if (status == "PENDING") {
+            pendingTab.isSelected = true
+            completedTab.isSelected = false
+        } else if (status == "COMPLETED") {
+            completedTab.isSelected = true
+            pendingTab.isSelected = false
+        }
+    }
+
+
     override fun onResume() {
         super.onResume()
-        fetchUserTasks() // Fetch tasks when the activity is resumed
-    }
-
-    private fun filterTasksForToday() {
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        populateTasks(today)
-    }
-
-    private fun filterTasksForWeek() {
-        // Implement your logic to filter tasks for the week
-        populateTasks() // Placeholder
-    }
-
-    private fun filterTasksForMonth() {
-        // Implement your logic to filter tasks for the month
-        populateTasks() // Placeholder
+        fetchUserTasks()
     }
 }

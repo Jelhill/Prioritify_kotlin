@@ -12,5 +12,13 @@
     <color name="mediumPriorityColor">#FFF9C4</color>
     <color name="lowPriorityColor">#C8E6C9</color>
     <color name="completedTaskColor">#BDBDBD</color>
-    <color name="activeTabColor">#FF5722</color> <!-- Example color, you can choose any other -->
+    <color name="activeTabColor">#FF5722</color>
+    <color name="colorAccent">#FF5722</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorSelectedText">#FFFFFF</color> <!-- White -->
+    <color name="colorUnselectedText">#000000</color> <!-- Black -->
+    <color name="colorSelectedTab">#FFD700</color> <!-- Gold for selected -->
+    <color name="colorUnselectedTab">#808080</color> <!-- Grey for unselected -->
+    @color/colorAccent
+    <!-- Example color, you can choose any other -->
 </resources>
