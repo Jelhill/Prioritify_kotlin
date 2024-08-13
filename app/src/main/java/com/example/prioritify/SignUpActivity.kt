@@ -75,9 +75,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun registerUser(name: String, email: String, password: String) {
-        Log.d("DATA", "$email $name $password")
         val request = RegisterRequest(name, email, password)
-        Log.d("RegisterRequest", request.toString())
 
         val apiService = RetrofitClient.getInstance(sessionManager)
         val call = apiService.registerUser(request)
@@ -90,17 +88,15 @@ class SignUpActivity : AppCompatActivity() {
                     Toast.makeText(this@SignUpActivity, "Registration successful: ${user?.full_name}", Toast.LENGTH_SHORT).show()
 
                     // Save the token or navigate to the next screen
-                    val intent = Intent(this@SignUpActivity, LandingActivity::class.java)
+                    val intent = Intent(this@SignUpActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {
-                    Log.d("RESPONDE BODY", response.toString())
                     Toast.makeText(this@SignUpActivity, "Registration failed: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                Log.d("Message", t.toString())
                 Toast.makeText(this@SignUpActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

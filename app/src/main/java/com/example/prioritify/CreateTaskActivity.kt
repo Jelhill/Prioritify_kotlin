@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prioritify.api.CreateTaskResponse
 import com.example.prioritify.api.TaskRequest
-import com.example.prioritify.api.TaskResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,7 +31,6 @@ class CreateTaskActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)  // Initialize SessionManager
         dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
 
-        // Initialize EditTexts and other UI components
         val startDateTimeEditText: EditText = findViewById(R.id.editTextStartDateTime)
         val endDateTimeEditText: EditText = findViewById(R.id.editTextEndDateTime)
         val titleEditText: EditText = findViewById(R.id.editTextTitle)
@@ -40,14 +38,12 @@ class CreateTaskActivity : AppCompatActivity() {
         val priorityRadioGroup: RadioGroup = findViewById(R.id.radioGroupPriority)
         val createButton: Button = findViewById(R.id.buttonCreate)
 
-        // Set up date-time picker for start date-time
         startDateTimeEditText.setOnClickListener {
             showDateTimePicker { dateTime ->
                 startDateTimeEditText.setText(dateTime)
             }
         }
 
-        // Set up date-time picker for end date-time
         endDateTimeEditText.setOnClickListener {
             showDateTimePicker { dateTime ->
                 endDateTimeEditText.setText(dateTime)
@@ -94,13 +90,11 @@ class CreateTaskActivity : AppCompatActivity() {
     private fun showDateTimePicker(onDateTimeSelected: (String) -> Unit) {
         val calendar = Calendar.getInstance()
 
-        // Show date picker
         DatePickerDialog(this, { _, year, month, dayOfMonth ->
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            // Show time picker after date has been selected
             TimePickerDialog(this, { _, hourOfDay, minute ->
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
@@ -111,8 +105,7 @@ class CreateTaskActivity : AppCompatActivity() {
     }
 
     private fun getReminderTime(startTime: String): String {
-        // Placeholder logic for reminder time; you can customize this as needed
-        return startTime // Use the same startTime as the reminder for simplicity
+        return startTime
     }
 
     private fun isEndDateValid(startTime: String, endTime: String): Boolean {
@@ -134,7 +127,6 @@ class CreateTaskActivity : AppCompatActivity() {
                 if (response.isSuccessful && response.body()?.success == true) {
                     Toast.makeText(this@CreateTaskActivity, "Task Created Successfully", Toast.LENGTH_SHORT).show()
 
-                    // Navigate back to LandingActivity
                     val intent = Intent(this@CreateTaskActivity, LandingActivity::class.java)
                     startActivity(intent)
                     finish()

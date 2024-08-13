@@ -155,9 +155,7 @@ class EditTaskDialogFragment : DialogFragment() {
         call.enqueue(object : Callback<TaskResponse> {
             override fun onResponse(call: Call<TaskResponse>, response: Response<TaskResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
-                    // Remove task from the local list since deletion was successful
                     LandingActivity.taskList.removeAt(taskIndex)
-                    // Refresh the UI for the correct task status
                     val currentStatus = if (task.status == "PENDING") "PENDING" else "COMPLETED"
                     (activity as LandingActivity).populateTasks(currentStatus)
 

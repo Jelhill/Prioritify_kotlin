@@ -108,14 +108,9 @@ class EditTaskActivity : AppCompatActivity() {
             Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             return
         }
-        Log.d("VALIDATION OKAY", "VALIDATION OKAY")
 
-        // Assuming the reminder time is the same as the start time
         val reminderTime = fromTime
         val task = LandingActivity.taskList[taskIndex]
-
-        Log.d("TASK ID CHECK", "Task ID: ${task._id}")  // Debugging: check if task ID is null
-        Log.d("TASK ===> CHECK", task.toString())  // Debugging: check if task ID is null
 
         if (task._id == null) {
             Toast.makeText(this, "Task ID is missing. Cannot update task.", Toast.LENGTH_SHORT).show()
@@ -129,10 +124,8 @@ class EditTaskActivity : AppCompatActivity() {
             endTime = toTime,
             reminder = reminderTime
         )
-        Log.d("TASK REQUEST", taskRequest.toString())
 
         val taskId = LandingActivity.taskList[taskIndex]._id
-        Log.d("ABOUT TO CALL API SERVICE", "Hello")
         val call = apiService.updateTask(taskId, taskRequest)
 
         call.enqueue(object : Callback<EditTaskResponse> {

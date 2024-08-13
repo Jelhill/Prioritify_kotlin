@@ -11,12 +11,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitClient(private val sessionManager: SessionManager) {
 
-    // Define the Interceptor to add the auth token to the request
     private val authInterceptor = Interceptor { chain ->
         val original = chain.request()
         val token = sessionManager.fetchAuthToken()
         Log.d("INTERCEPTING TOKEN", token.toString())
-        // Add the Authorization header with the token if available
         val requestBuilder: Request.Builder = original.newBuilder()
             .header("Authorization", "Bearer $token")
 
@@ -24,12 +22,10 @@ class RetrofitClient(private val sessionManager: SessionManager) {
         chain.proceed(request)
     }
 
-    // Define the OkHttpClient to apply the interceptor
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
         .build()
 
-    // Define the Retrofit instance
     companion object {
         fun getInstance(sessionManager: SessionManager): ApiService {
             val retrofitClient = RetrofitClient(sessionManager)

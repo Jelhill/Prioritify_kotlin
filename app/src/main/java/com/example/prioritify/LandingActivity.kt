@@ -30,7 +30,7 @@ class LandingActivity : AppCompatActivity() {
     }
 
     private lateinit var apiService: ApiService
-    private var currentStatus: String = "PENDING" // Track the currently selected tab status
+    private var currentStatus: String = "PENDING"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +54,7 @@ class LandingActivity : AppCompatActivity() {
             filterTasksByStatus(currentStatus)
         }
 
-        fetchUserTasks() // Fetch tasks when the activity is created
+        fetchUserTasks()
     }
 
     private fun fetchUserTasks() {
@@ -95,7 +95,6 @@ class LandingActivity : AppCompatActivity() {
         }
 
         if (filteredTaskList.isEmpty()) {
-            // Show a message or empty state if no tasks match the filter
             val emptyView = layoutInflater.inflate(R.layout.empty_task_item, taskContainer, false)
             taskContainer.addView(emptyView)
             return
@@ -155,9 +154,7 @@ class LandingActivity : AppCompatActivity() {
         call.enqueue(object : Callback<EditTaskResponse> {
             override fun onResponse(call: Call<EditTaskResponse>, response: Response<EditTaskResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
-                    // Update the task status in the local list
                     LandingActivity.taskList[index].status = status
-                    // Immediately remove the task from the UI
                     taskList.removeAt(index)
                     populateTasks("PENDING")
                 } else {
@@ -194,7 +191,6 @@ class LandingActivity : AppCompatActivity() {
             }
         })
 
-        // Update tab UI to show which tab is selected
         val pendingTab: TextView = findViewById(R.id.textViewPendingTasks)
         val completedTab: TextView = findViewById(R.id.textViewCompletedTasks)
 

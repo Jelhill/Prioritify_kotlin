@@ -42,7 +42,7 @@ data class CreateTaskResponse(
 data class EditTaskResponse(
     val success: Boolean,
     val message: String,
-    val data: TaskData // Assuming it returns a single TaskData object
+    val data: TaskData,
 )
 
 data class TaskStatusRequest (
